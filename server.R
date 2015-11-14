@@ -7,10 +7,8 @@ library(stringr)
 gmail_auth('data/silisales1.json')
 
 source('data/envelopes.R')
-source('data/envelopes2.R')
 
-
-
+#Create Server
 shinyServer(
   function(input, output) {
     
@@ -23,7 +21,7 @@ shinyServer(
       test2 <- paste(substr(test,6,7),substr(test,9,10),sep='/')
       }
       test3 <- paste('petkey',test2,sep=' ')
-      envelopes(test3)
+      envelopes(test3)[[1]]
     })
     datasetInput2 <- reactive({
       test <- as.character(input$dates)
@@ -34,7 +32,7 @@ shinyServer(
         test2 <- paste(substr(test,6,7),substr(test,9,10),sep='/')
       }
       test3 <- paste('petkey',test2,sep=' ')
-      envelopes2(test3)
+      envelopes(test3)[[2]]
     })
     
     output$table <- renderTable({

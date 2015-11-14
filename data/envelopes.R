@@ -149,7 +149,7 @@ envelopes <- function(search_term){
       #Customer Zip
       #Special considerations taken for Canada
       
-      if(grepl('Canada',data[customeraddress])==FALSE){
+      if(grepl('Canada',data[customeraddress])==TRUE){
         customerzip <- substr(data[customeraddress],
                               str_locate_all(pattern='&nbsp;&nbsp;',data[customeraddress])[[1]][,2]+1,
                               str_locate_all(pattern='<br/>',data[customeraddress])[[1]][,1][2]-1)
@@ -254,6 +254,6 @@ envelopes <- function(search_term){
     }
   }
   #Output summary Statistics
-  data.frame(table(final$style))
+  list(data.frame(table(final$style)),doc)
 }
 
