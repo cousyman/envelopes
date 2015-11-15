@@ -56,14 +56,12 @@ envelopes <- function(search_term){
       
       
       #Tag Style
-      
       style <- grep('Holder1_lblTagStyle',data)
       style <- substr(data[style],
                       str_locate_all(pattern='TagStyle">',data[style])[[1]][,2]+1,
                       str_locate_all(pattern='</span',data[style])[[1]][,1]-1)
       
       #Tag Quantity
-      
       qty <- grep('QTY:',data)
       qty <- substr(data[qty],
                     str_locate_all(pattern='<b>QTY:</b>',data[qty])[[1]][,2]+2,
@@ -77,7 +75,6 @@ envelopes <- function(search_term){
                         str_locate_all(pattern='</td></tr><tr><td>',data[petname])[[1]][,1]-1)
       
       #Microchip Number
-      
       mchip_pattern <- 'ID #|MICROCHIP #'
       microchip <- grep(mchip_pattern, data)
       microchip <- substr(data[microchip],
@@ -127,7 +124,6 @@ envelopes <- function(search_term){
       
       #Customer city
       #Account for if there are or are not two lines in the address
-      
       if(numlinesaddress==2){
         customercity <- substr(data[customeraddress],
                                str_locate_all(pattern='<br/>',data[customeraddress])[[1]][1,2]+1,
@@ -153,8 +149,7 @@ envelopes <- function(search_term){
       
   
       #Customer Zip
-      #Special considerations taken for Canada
-      
+      #Special considerations taken for Canada, Brazil, and Mexico
       if(grepl('Canada',data[customeraddress])==TRUE|
          grepl('Brazil',data[customeraddress])==TRUE){
         customerzip <- substr(data[customeraddress],
@@ -171,14 +166,12 @@ envelopes <- function(search_term){
       }
       
       #Customer Phone Number
-      
       customerphone <- grep('"ContentPlaceHolder1_lblPhone">',data)
       customerphone <- substr(data[customerphone],
                               str_locate_all(pattern='"ContentPlaceHolder1_lblPhone">',data[customerphone])[[1]][,2]+1,
                               str_locate_all(pattern='</span><br/>',data[customerphone])[[1]][,1]-1)
       
       #Order Date
-      
       order_date <- grep('id="ContentPlaceHolder1_lblDate">',data)
       order_date <- substr(data[order_date],
                            str_locate_all(pattern='id="ContentPlaceHolder1_lblDate">',data[order_date])[[1]][,2]+1,
@@ -186,7 +179,6 @@ envelopes <- function(search_term){
       
       
       #Create a data.frame with this information.
-      
       customername <- tolower(customername)
       customername <- .simpleCap(customername)
       customerstreet1 <- tolower(customerstreet1)
@@ -228,7 +220,6 @@ envelopes <- function(search_term){
       mailname <- .simpleCap(mailname)
       
       ##Add address to new envelope
-      
       pot1 = mailname
       if(numlinesaddress==2){
         pot2 = df$custstreet1
@@ -268,6 +259,6 @@ envelopes <- function(search_term){
     }
   }
   #Output summary Statistics
-  list(data.fame(table(final$style)),doc)
+  list(data.frame(table(final$style)),doc)
 }
 
