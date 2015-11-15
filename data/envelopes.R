@@ -101,9 +101,11 @@ envelopes <- function(search_term){
       customeraddress <- grep('ContentPlaceHolder1_lblAddress',data)
       numlinesaddress <- nrow(str_locate_all(pattern='<br/>', data[customeraddress])[[1]])
       
-      #If from Canada, fix the grep() function.
+      #If from Canada, Mexico, or Brazil fix the grep() function.
       #The extra line with Canada throws off the general US algorithm.
-      if(grepl('Canada',data[customeraddress])==TRUE){
+      if(grepl('Canada',data[customeraddress])==TRUE|
+         (grepl('Mexico',data[customeraddress])==TRUE & grepl('New Mexico',data[customeraddress])==FALSE)|
+         grepl('Brazil',data[customeraddress])==TRUE){
         numlinesaddress <- numlinesaddress-1
       }
       
@@ -142,17 +144,26 @@ envelopes <- function(search_term){
                               str_locate_all(pattern=',&nbsp;',data[customeraddress])[[1]][,2]+1,
                               str_locate_all(pattern='&nbsp;&nbsp;',data[customeraddress])[[1]][,1]-1)
       #If a Canadian customer, do not attempt to abbreviate the state.
-      if(grepl('Canada',data[customeraddress])==FALSE){
-      customerstate <- statedata[statedata[,2]==customerstate,'abb']
+        
+      if(grepl('Canada',data[customeraddress])==FALSE&
+         (grepl('Mexico',data[customeraddress])==FALSE & grepl('New Mexico',data[customeraddress])==FALSE)&
+         grepl('Brazil',data[customeraddress])==FALSE){
+        customerstate <- statedata[statedata[,2]==customerstate,'abb']
       }
+      
   
       #Customer Zip
       #Special considerations taken for Canada
       
-      if(grepl('Canada',data[customeraddress])==TRUE){
+      if(grepl('Canada',data[customeraddress])==TRUE|
+         grepl('Brazil',data[customeraddress])==TRUE){
         customerzip <- substr(data[customeraddress],
                               str_locate_all(pattern='&nbsp;&nbsp;',data[customeraddress])[[1]][,2]+1,
                               str_locate_all(pattern='<br/>',data[customeraddress])[[1]][,1][2]-1)
+      }else if((grepl('Mexico',data[customeraddress])==TRUE & grepl('New Mexico',data[customeraddress])==FALSE)){
+        customerzip <- substr(data[customeraddress],
+                              str_locate_all(pattern='&nbsp;&nbsp;',data[customeraddress])[[1]][,2]+1,
+                              str_locate_all(pattern='<br/>',data[customeraddress])[[1]][,1][3]-1)
       }else{
         customerzip <- substr(data[customeraddress],
                               str_locate_all(pattern='&nbsp;&nbsp;',data[customeraddress])[[1]][,2]+1,
@@ -226,8 +237,9 @@ envelopes <- function(search_term){
         
         pot1 <- as.character(pot1)
         pot2 <- as.character(pot2)
-        pot4 <- as.character(ifelse(grepl('Canada',data[customeraddress])==TRUE,'Canada',''))
-        
+        pot4 <- as.character(ifelse(grepl('Canada',data[customeraddress])==TRUE,'Canada',
+                                  ifelse(grepl('Mexico',data[customeraddress])==TRUE & grepl('New Mexico',data[customeraddress])==FALSE,'Mexico',
+                                      ifelse(grepl('Brazil',data[customeraddress])==TRUE,'Brazil',''))))
         mypars = set_of_paragraphs(pot1,pot2,pot3,pot4)
         
       } else if(numlinesaddress!=2){
@@ -239,7 +251,9 @@ envelopes <- function(search_term){
         pot1 <- as.character(pot1)
         pot2 <- as.character(pot2)
         pot3 <- as.character(pot3)
-        pot5 <- as.character(ifelse(grepl('Canada',data[customeraddress])==TRUE,'Canada',''))
+        pot5 <- as.character(ifelse(grepl('Canada',data[customeraddress])==TRUE,'Canada',
+                                    ifelse(grepl('Mexico',data[customeraddress])==TRUE & grepl('New Mexico',data[customeraddress])==FALSE,'Mexico',
+                                           ifelse(grepl('Brazil',data[customeraddress])==TRUE,'Brazil',''))))
         
         mypars = set_of_paragraphs(pot1,pot2,pot3,pot4,pot5)
         
@@ -254,6 +268,6 @@ envelopes <- function(search_term){
     }
   }
   #Output summary Statistics
-  list(data.frame(table(final$style)),doc)
+  list(data.fame(table(final$style)),doc)
 }
 

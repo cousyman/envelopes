@@ -14,24 +14,18 @@ shinyServer(
     
     datasetInput <- reactive({
       test <- as.character(input$dates)
-      if(substr(test,9,9)=='0'){
-        test2 <- paste(substr(test,6,7),substr(test,10,10),sep='/')
-      }
-      else{
-      test2 <- paste(substr(test,6,7),substr(test,9,10),sep='/')
-      }
-      test3 <- paste('petkey',test2,sep=' ')
+      month <- gsub('-','',gsub('-0','',substr(test,5,7)))
+      day <- gsub('-','',gsub('-0','',substr(test,8,10)))
+      test <- paste(month, day,substr(test,1,4),sep='/')
+      test3 <- paste('petkey',test,sep=' ')
       envelopes(test3)[[1]]
     })
     datasetInput2 <- reactive({
       test <- as.character(input$dates)
-      if(substr(test,9,9)=='0'){
-        test2 <- paste(substr(test,6,7),substr(test,10,10),sep='/')
-      }
-      else{
-        test2 <- paste(substr(test,6,7),substr(test,9,10),sep='/')
-      }
-      test3 <- paste('petkey',test2,sep=' ')
+      month <- gsub('-','',gsub('-0','',substr(test,5,7)))
+      day <- gsub('-','',gsub('-0','',substr(test,8,10)))
+      test <- paste(month, day,substr(test,1,4),sep='/')
+      test3 <- paste('petkey',test,sep=' ')
       envelopes(test3)[[2]]
     })
     
